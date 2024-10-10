@@ -1,13 +1,14 @@
 import google.generativeai as genai
 
-
 class GerarConteudo:
     def __init__(self, entrada):
         self.entrada = entrada
         genai.configure(api_key='AIzaSyBditdh8-JKnA7FkrDyGFicOf4xQOljePs')
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        self.response = model.generate_content(
-            entrada,
+        self.model = genai.GenerativeModel("gemini-1.5-flash")
+
+    def gerar_texto(self):
+        self.response = self.model.generate_content(
+            self.entrada,
             generation_config=genai.types.GenerationConfig(
                 candidate_count=1,
                 stop_sequences=[""],
@@ -15,6 +16,4 @@ class GerarConteudo:
                 temperature=1.0,
             )
         )
-
-    def gerarTexto(self):
         return self.response.text
