@@ -1,7 +1,19 @@
 from Chatbot import GerarConteudo
+from Perguntas import InteracaoChatBot
 
-prompt = input("Sobre o que vamos falar? ")
-conversa = GerarConteudo(prompt)
-textogerado = conversa.gerarTexto()
+while True:
+    conversa = InteracaoChatBot()
+    prompt = input(conversa.IteracaoRam())
+    resposta = GerarConteudo(prompt)
+    textogerado = resposta.gerar_texto()
 
-print(textogerado)
+    print(textogerado)
+
+    confirmacao = input('Deseja continuar? ')
+
+    if confirmacao == 'Não' or confirmacao == 'não' or confirmacao == 'Nao' or confirmacao == 'nao':
+        break
+    elif prompt == 'Sair' or prompt == 'sair':
+        break
+    else:
+        continue
