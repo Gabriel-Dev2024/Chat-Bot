@@ -1,8 +1,8 @@
 import random
 class InteracaoChatBot():
     def __init__(self):
-        global iteracao
-        iteracao = ["Olá! Como posso te ajudar hoje? ",
+        global interacao
+        interacao = ["Olá! Como posso te ajudar hoje? ",
                     "No que posso ser útil? ",
                     "Qual o motivo da sua visita? ",
                     "O que você espera encontrar aqui? ",
@@ -18,5 +18,9 @@ class InteracaoChatBot():
                     'Olá! Quais são suas perguntas sobre o mundo do conhecimento?',
                     'Bem-vindo! Pronto para um pouco de conhecimento?'
                     ]
-    def IteracaoRam(self):
-        return random.choice(iteracao)
+
+        global despedidas
+        despedidas = []
+
+    def InteracaoRam(self):
+        return random.choice(interacao)

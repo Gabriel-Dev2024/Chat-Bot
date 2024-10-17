@@ -3,7 +3,7 @@ from Perguntas import InteracaoChatBot
 
 while True:
     conversa = InteracaoChatBot()
-    prompt = input(conversa.IteracaoRam())
+    prompt = input(conversa.InteracaoRam())
     resposta = GerarConteudo(prompt)
     textogerado = resposta.gerar_texto()
 

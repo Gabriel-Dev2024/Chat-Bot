@@ -3,42 +3,80 @@ import tkinter as tk
 from Chatbot import GerarConteudo
 from Perguntas import InteracaoChatBot
 
-saudacoes = InteracaoChatBot()
+class Interface_Chat():
+        def __init__(self):
+                self.app = ctk.CTk()
+                self.saudacoes = InteracaoChatBot()
+                self.conversas = []
+                self.tela()
+                self.tela_chat()
 
-app = ctk.CTk()
-app.geometry("700x600")
-app.title("ChatBot")
-app.resizable(False, False)
+                self.app.mainloop()
 
-frame_chat = ctk.CTkFrame(master=app, width=450, height=750, fg_color='#B3B3B3')
-frame_chat.pack()
+        def tela(self):
+                largura_janela = 1000
+                altura_janela = 650
 
-label_title = ctk.CTkLabel(frame_chat, text='Chat Bot', font=('Arial', 32))
-label_title.pack(pady=(30,0))
+                largura_tela = self.app.winfo_screenwidth()
+                altura_tela = self.app.winfo_screenheight()
 
-label_saudacao = ctk.CTkLabel(frame_chat, text=saudacoes.IteracaoRam(), font=('Arial', 14))
-label_saudacao.pack(pady=(30, 0))
+                pos_x = (largura_tela // 2) - (largura_janela // 2)
+                pos_y = (altura_tela // 2) - (altura_janela // 2)
 
-label_text = ctk.CTkLabel(frame_chat, text='', font=('Arial', 10), text_color='black')
-label_text.pack(pady=(50,0))
+                self.app.geometry(f'{largura_janela}x{altura_janela}+{pos_x}+{pos_y}')
+                self.app.title("ChatBot")
+                self.app.resizable(False, False)
+                ctk.set_appearance_mode('system')
 
-label_res = ctk.CTkLabel(frame_chat, text='', font=('Arial', 10), text_color='black')
-label_res.pack(pady=(40, 0))
+        def tela_chat(self):
+                self.frame_chat = ctk.CTkFrame(master=self.app, fg_color='#fff')
+                self.frame_chat.pack(fill="both", expand=True)
 
-entry = ctk.CTkTextbox(frame_chat, width=300, height=60)
-entry.pack(pady=(180, 0))
-entry.bind('<Return>', lambda event: funcao_enviar())
+                self.label_title = ctk.CTkLabel(self.frame_chat, text='Chat Bot', font=('Arial', 32))
+                self.label_title.pack(pady=(20, 0))
 
-button = ctk.CTkButton(frame_chat, text='Enviar', width=100, command=lambda: funcao_enviar())
-button.pack(pady=(50, 0))
+                self.label_saudacao = ctk.CTkLabel(self.frame_chat, text=self.saudacoes.InteracaoRam(), font=('Arial', 14))
+                self.label_saudacao.pack(pady=(30, 0))
 
-def funcao_enviar():
-        entry_user = entry.get('1.0', tk.END).strip()
-        label_text.configure(text=entry_user)
+                self.text_conversa = ctk.CTkTextbox(self.frame_chat, width=800, height=380, state="disabled", fg_color='#D7D8D7')
+                self.text_conversa.pack(pady=(20, 0))
 
-        conversa = GerarConteudo(entry_user)
-        label_res.configure(text=conversa.gerar_texto())
+                '''self.label_text = ctk.CTkLabel(self.frame_chat, text='', font=('Arial', 14), text_color='black')
+                self.label_text.pack(pady=(40, 0))
 
-        entry.delete('1.0', tk.END)
+                self.label_res = ctk.CTkLabel(self.frame_chat, text='', font=('Arial', 14), text_color='black')
+                self.label_res.pack(pady=(40, 0))'''
 
-app.mainloop()
+                self.entry = ctk.CTkTextbox(self.frame_chat, width=500, height=60, fg_color='#D7D8D7')
+                self.entry.pack(pady=(10, 0))
+                self.entry.bind('<Return>', lambda event: self.funcao_enviar())
+
+                button = ctk.CTkButton(self.frame_chat, text='Enviar', width=100, command=self.funcao_enviar)
+                button.pack(pady=(20, 0))
+
+        def funcao_enviar(self):
+                entry_user = self.entry.get('1.0', tk.END).strip()
+
+                if entry_user:
+                        self.conversas.append(f'Você: {entry_user}\n')
+                        self.atualizar_conversa()
+
+                        conversa = GerarConteudo(entry_user)
+                        resposta = conversa.gerar_texto()
+
+                        self.conversas.append(f'Bot: {resposta}\n')
+                        self.atualizar_conversa()
+
+                        self.entry.delete('1.0', tk.END)
+
+        def atualizar_conversa(self):
+                self.text_conversa.configure(state="normal")
+                self.text_conversa.delete('1.0', tk.END)
+
+                for conversa in self.conversas:
+                        self.text_conversa.insert(tk.END, conversa + "\n")
+
+                self.text_conversa.configure(state="disabled")
+                self.text_conversa.yview(tk.END)
+
+Interface_Chat()
