@@ -38,17 +38,11 @@ class Interface_Chat():
                 self.label_saudacao = ctk.CTkLabel(self.frame_chat, text=self.saudacoes.InteracaoRam(), font=('Arial', 14))
                 self.label_saudacao.pack(pady=(30, 0))
 
-                self.text_conversa = ctk.CTkTextbox(self.frame_chat, width=800, height=380, state="disabled", fg_color='#D7D8D7')
+                self.text_conversa = ctk.CTkTextbox(self.frame_chat, width=600, height=380, state="disabled", fg_color='#D7D8D7')
                 self.text_conversa.pack(pady=(20, 0))
 
-                '''self.label_text = ctk.CTkLabel(self.frame_chat, text='', font=('Arial', 14), text_color='black')
-                self.label_text.pack(pady=(40, 0))
-
-                self.label_res = ctk.CTkLabel(self.frame_chat, text='', font=('Arial', 14), text_color='black')
-                self.label_res.pack(pady=(40, 0))'''
-
                 self.entry = ctk.CTkTextbox(self.frame_chat, width=500, height=60, fg_color='#D7D8D7')
-                self.entry.pack(pady=(10, 0))
+                self.entry.pack(pady=(20, 0))
                 self.entry.bind('<Return>', lambda event: self.funcao_enviar())
 
                 button = ctk.CTkButton(self.frame_chat, text='Enviar', width=100, command=self.funcao_enviar)
@@ -67,6 +61,8 @@ class Interface_Chat():
                         self.conversas.append(f'Bot: {resposta}\n')
                         self.atualizar_conversa()
 
+                        self.salvar_conversa()
+
                         self.entry.delete('1.0', tk.END)
 
         def atualizar_conversa(self):
@@ -78,5 +74,12 @@ class Interface_Chat():
 
                 self.text_conversa.configure(state="disabled")
                 self.text_conversa.yview(tk.END)
+
+        def salvar_conversa(self):
+                caminho_arquivo = 'conversas.txt'
+
+                with open(caminho_arquivo, 'a') as arquivo:
+                        for conversa in self.conversas:
+                                arquivo.write(conversa + '\n')
 
 Interface_Chat()
