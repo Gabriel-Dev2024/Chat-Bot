@@ -2,7 +2,6 @@ import customtkinter as ctk
 import tkinter as tk
 from Chatbot import GerarConteudo
 from Perguntas import InteracaoChatBot
-import time
 
 class Interface_Chat():
     def __init__(self):
@@ -39,8 +38,7 @@ class Interface_Chat():
         self.label_saudacao = ctk.CTkLabel(self.frame_chat, text=self.saudacoes.InteracaoRam(), font=('Arial', 14))
         self.label_saudacao.pack(pady=(30, 0))
 
-        self.text_conversa = ctk.CTkTextbox(self.frame_chat, width=600, height=380, state="disabled",
-                                            fg_color='#D7D8D7')
+        self.text_conversa = ctk.CTkTextbox(self.frame_chat, width=600, height=380, state="disabled", fg_color='#D7D8D7')
         self.text_conversa.pack(pady=(20, 0))
 
         self.entry = ctk.CTkTextbox(self.frame_chat, width=500, height=60, fg_color='#D7D8D7')
@@ -54,7 +52,7 @@ class Interface_Chat():
         entry_user = self.entry.get('1.0', tk.END).strip()
 
         if entry_user:
-            self.conversas.append(f'Você: {entry_user}\n')
+            self.conversas.append(f'Você: {entry_user}\n\n')
             self.atualizar_conversa()
 
             conversa = GerarConteudo(entry_user)
@@ -64,7 +62,7 @@ class Interface_Chat():
             self.atualizar_conversa()
 
             # Inicia a animação de digitação
-            self.animar_resposta(resposta)
+            self.animar_resposta(resposta  + '\n\n')
 
             self.salvar_conversa()
 
@@ -72,15 +70,22 @@ class Interface_Chat():
 
     def animar_resposta(self, resposta):
         self.text_conversa.configure(state="normal")
+        
+        self.index = 0 
+        self.resposta = resposta
+        self.text_conversa.insert(tk.END, 'Bot: ')
+        self.atualizar_conversa()
+        self.escrever_letra()
 
-        for letra in resposta:
-            self.conversas[-1] += letra
+    def escrever_letra(self):
+        if self.index < len(self.resposta):
+            self.conversas[-1] += self.resposta[self.index]
             self.atualizar_conversa()
+            self.index += 1
             self.text_conversa.see(tk.END)
-            self.app.update()
-            time.sleep(0.05)
-
-        self.text_conversa.configure(state="disabled")
+            self.app.after(10, self.escrever_letra)
+        else:
+            self.text_conversa.configure(state="disabled")
 
     def atualizar_conversa(self):
         self.text_conversa.configure(state="normal")
