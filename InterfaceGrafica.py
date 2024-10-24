@@ -1,11 +1,18 @@
 import customtkinter as ctk
 import tkinter as tk
+from tkinter import messagebox
 from Chatbot import GerarConteudo
 from Perguntas import InteracaoChatBot
 
 class Interface_Chat():
     def __init__(self):
         self.app = ctk.CTk()
+
+        self.app.iconbitmap('images/logo.ico')
+
+        self.font_header = 'League Spartan'
+        self.font_body = 'Montserrat Classic'
+
         self.saudacoes = InteracaoChatBot()
         self.conversas = []
         
@@ -14,6 +21,8 @@ class Interface_Chat():
 
         self.tela()
         self.tela_chat()
+
+        self.criar_menu()
 
         self.app.mainloop()
 
@@ -41,16 +50,15 @@ class Interface_Chat():
         self.app.geometry(f'{largura_janela}x{altura_janela}+{pos_x}+{pos_y}')
         self.app.title("ChatBot")
         self.app.resizable(False, False)
-        ctk.set_appearance_mode('light')
 
     def tela_chat(self):
         self.frame_chat = ctk.CTkFrame(master=self.app, fg_color=self.bg_color)
         self.frame_chat.pack(fill="both", expand=True)
 
-        self.label_title = ctk.CTkLabel(self.frame_chat, text='Chat Bot', font=('Arial', 32), text_color=self.text_color)
+        self.label_title = ctk.CTkLabel(self.frame_chat, text='Chat Bot', font=(self.font_header, 32), text_color=self.text_color)
         self.label_title.pack(pady=(20, 0))
 
-        self.label_saudacao = ctk.CTkLabel(self.frame_chat, text=self.saudacoes.InteracaoRam(), font=('Arial', 14), text_color=self.text_color)
+        self.label_saudacao = ctk.CTkLabel(self.frame_chat, text=self.saudacoes.InteracaoRam(), font=(self.font_body, 14), text_color=self.text_color)
         self.label_saudacao.pack(pady=(20, 0))
 
         self.text_conversa = ctk.CTkTextbox(self.frame_chat, width=600, height=360, state="disabled", fg_color=self.entry_color, wrap=tk.WORD, text_color=self.text_color)
@@ -63,6 +71,28 @@ class Interface_Chat():
 
         button = ctk.CTkButton(self.frame_chat, text='Enviar', width=100, command=self.funcao_enviar, fg_color='#232DA9', hover_color='#02075D')
         button.pack(pady=(20, 0))
+
+    def criar_menu(self):
+        # Frame para o menu no canto superior direito
+        self.menu_frame = ctk.CTkFrame(self.app, width=100, height=50, fg_color='gray')
+        self.menu_frame.place(x=920, y=10)  # Posicionar o menu no canto superior direito
+
+        # Botão de três barrinhas (menu hamburguer)
+        self.menu_button = ctk.CTkButton(self.menu_frame, text="≡", width=30, height=30, command=self.menu_opcoes, fg_color=self.bg_color, text_color=self.text_color)
+        self.menu_button.pack(pady=10, padx=10)
+
+    def menu_opcoes(self):
+        # Criação do menu suspenso
+        self.menu = tk.Menu(self.app, tearoff=0)
+        self.menu.add_command(label="Sair", command=self.sair)
+
+        # Exibir o menu suspenso no botão
+        self.menu.post(self.menu_button.winfo_rootx(), self.menu_button.winfo_rooty() + self.menu_button.winfo_height())
+
+    def sair(self):
+        messagebox.showinfo('Sair')
+
+        self.app.quit()
 
     def paste_text(self, event):
         self.entry.insert(tk.END, self.app.clipboard_get())
