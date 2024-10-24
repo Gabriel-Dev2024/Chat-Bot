@@ -1,4 +1,4 @@
-from Chatbot import GerarConteudo
+from Chatbot import GerarConteudo 
 from Perguntas import InteracaoChatBot
 
 while True:
