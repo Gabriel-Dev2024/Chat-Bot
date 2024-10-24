@@ -2,19 +2,31 @@ import customtkinter as ctk
 import tkinter as tk
 from Chatbot import GerarConteudo
 from Perguntas import InteracaoChatBot
-from nltk.tokenize import sent_tokenize
-import random
 
 class Interface_Chat():
     def __init__(self):
         self.app = ctk.CTk()
         self.saudacoes = InteracaoChatBot()
         self.conversas = []
-        self.conteudo_completo = ''
+        
+        ctk.set_appearance_mode('system')
+        self.definir_cores()
+
         self.tela()
         self.tela_chat()
 
         self.app.mainloop()
+
+    def definir_cores(self):
+        self.current_mode = ctk.get_appearance_mode()
+        if self.current_mode == "Dark":
+            self.bg_color = "#2C2C2C"  # Cor de fundo escura
+            self.text_color = "#FFFFFF"  # Texto branco
+            self.entry_color = "#3C3C3C"  # Caixa de entrada mais escura
+        else:
+            self.bg_color = "#FFFFFF"  # Cor de fundo branca
+            self.text_color = "#000000"  # Texto preto
+            self.entry_color = "#D7D8D7"  # Caixa de entrada clara
 
     def tela(self):
         largura_janela = 1000
@@ -24,34 +36,32 @@ class Interface_Chat():
         altura_tela = self.app.winfo_screenheight()
 
         pos_x = (largura_tela // 2) - (largura_janela // 2)
-        pos_y = (altura_tela // 2) - (altura_janela // 2)
+        pos_y = (altura_tela // 2.22) - (altura_janela // 2)
 
         self.app.geometry(f'{largura_janela}x{altura_janela}+{pos_x}+{pos_y}')
         self.app.title("ChatBot")
         self.app.resizable(False, False)
-        ctk.set_appearance_mode('system')
+        ctk.set_appearance_mode('light')
 
     def tela_chat(self):
-        self.frame_chat = ctk.CTkFrame(master=self.app, fg_color='#fff')
+        self.frame_chat = ctk.CTkFrame(master=self.app, fg_color=self.bg_color)
         self.frame_chat.pack(fill="both", expand=True)
 
-        self.label_title = ctk.CTkLabel(self.frame_chat, text='Chat Bot', font=('Arial', 32))
+        self.label_title = ctk.CTkLabel(self.frame_chat, text='Chat Bot', font=('Arial', 32), text_color=self.text_color)
         self.label_title.pack(pady=(20, 0))
 
-        self.label_saudacao = ctk.CTkLabel(self.frame_chat, text=self.saudacoes.InteracaoRam(), font=('Arial', 14))
-        self.label_saudacao.pack(pady=(30, 0))
+        self.label_saudacao = ctk.CTkLabel(self.frame_chat, text=self.saudacoes.InteracaoRam(), font=('Arial', 14), text_color=self.text_color)
+        self.label_saudacao.pack(pady=(20, 0))
 
-        self.text_conversa = ctk.CTkTextbox(self.frame_chat, width=600, height=380, state="disabled", fg_color='#D7D8D7', wrap=tk.WORD)
+        self.text_conversa = ctk.CTkTextbox(self.frame_chat, width=600, height=360, state="disabled", fg_color=self.entry_color, wrap=tk.WORD, text_color=self.text_color)
         self.text_conversa.configure(font=('Arial', 12))
         self.text_conversa.pack(pady=(20, 0))
 
-        self.entry = ctk.CTkTextbox(self.frame_chat, width=500, height=60, fg_color='#D7D8D7')
-        self.entry.pack(pady=(20, 0))
+        self.entry = ctk.CTkTextbox(self.frame_chat, width=500, height=60, fg_color=self.entry_color, text_color=self.text_color)
+        self.entry.pack(pady=(30, 0))
         self.entry.bind('<Return>', lambda event: self.funcao_enviar())
 
-        self.entry.bind('<Control-v>', lambda event: self.paste_text())
-
-        button = ctk.CTkButton(self.frame_chat, text='Enviar', width=100, command=self.funcao_enviar)
+        button = ctk.CTkButton(self.frame_chat, text='Enviar', width=100, command=self.funcao_enviar, fg_color='#232DA9', hover_color='#02075D')
         button.pack(pady=(20, 0))
 
     def paste_text(self, event):
@@ -63,29 +73,17 @@ class Interface_Chat():
 
         if entry_user:
             self.entry.delete('1.0', tk.END)
+
             self.conversas.append(f'Você: {entry_user}\n\n')
-            self.conteudo_completo += f'Você: {entry_user}\n\n'
             self.atualizar_conversa()
 
-            if entry_user.lower() == 'resuma' or entry_user == 'Resuma':
-                resumo = self.resumir_conversa()
-                self.conversas.append(f'Bot: {resumo}\n\n')
-                self.atualizar_conversa()
-            else:
-                conversa = GerarConteudo(entry_user)
-                resposta = conversa.gerar_texto()
+            conversa = GerarConteudo(entry_user)
+            resposta = conversa.gerar_texto()
 
             self.conversas.append('Bot: ')
-            self.conteudo_completo += 'Bot: '
             self.atualizar_conversa()
 
             self.animar_resposta(resposta  + '\n\n')
-
-    def resumir_conversa(self):
-        frases = sent_tokenize(self.conteudo_completo)  # Divide o texto em frases
-        # Apenas um exemplo simples de resumo: pega as 2 primeiras frases
-        resumo = ' '.join(frases[:2]) if len(frases) >= 2 else self.conteudo_completo
-        return resumo
 
     def animar_resposta(self, resposta):
         self.text_conversa.configure(state="normal")
