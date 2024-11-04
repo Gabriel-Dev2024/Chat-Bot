@@ -14,6 +14,8 @@ class Interface_Chat():
         self.font_body = 'Montserrat Classic'
 
         self.saudacoes = InteracaoChatBot()
+        self.despedidas = InteracaoChatBot()
+
         self.conversas = []
         
         ctk.set_appearance_mode('system')
@@ -90,7 +92,7 @@ class Interface_Chat():
         self.menu.post(self.menu_button.winfo_rootx(), self.menu_button.winfo_rooty() + self.menu_button.winfo_height())
 
     def sair(self):
-        messagebox.showinfo('Sair')
+        messagebox.showinfo('Sair', self.despedidas.DespedidaRam())
 
         self.app.quit()
 

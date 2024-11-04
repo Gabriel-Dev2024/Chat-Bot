@@ -20,7 +20,18 @@ class InteracaoChatBot():
                     ]
 
         global despedidas
-        despedidas = []
+        despedidas = ['Obrigado pela conversa, qualquer coisa me chame!',
+                      'Até a proxima!',
+                      'Volte assim que precisar!',
+                      'Me chame sempre que precisar',
+                      'Nos vemos na próxima',
+                      'Estarei esperando pela próxima!!',
+                      'Foi um prazer te ajudar!',
+                      'Até mais!'
+                      ]
 
     def InteracaoRam(self):
         return random.choice(interacao)
+    
+    def DespedidaRam(self):
+        return random.choice(despedidas)
