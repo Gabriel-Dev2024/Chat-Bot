@@ -1,9 +1,10 @@
 import google.generativeai as genai
-
+import os
 class GerarConteudo:
     def __init__(self, entrada):
         self.entrada = entrada
-        genai.configure(api_key='AIzaSyBditdh8-JKnA7FkrDyGFicOf4xQOljePs')
+        api_key = os.getenv('API_KEY')
+        genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel("gemini-1.5-flash")
 
     def gerar_texto(self):
