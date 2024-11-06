@@ -74,6 +74,11 @@ class Interface_Chat():
         button = ctk.CTkButton(self.frame_chat, text='Enviar', width=100, command=self.funcao_enviar, fg_color='#232DA9', hover_color='#02075D')
         button.pack(pady=(20, 0))
 
+        
+    def limpar_chat(self):
+        self.conversas.clear()
+        self.atualizar_conversa()
+
     def criar_menu(self):
         # Frame para o menu no canto superior direito
         self.menu_frame = ctk.CTkFrame(self.app, width=100, height=50, fg_color='gray')
@@ -86,7 +91,8 @@ class Interface_Chat():
     def menu_opcoes(self):
         # Criação do menu suspenso
         self.menu = tk.Menu(self.app, tearoff=0)
-        self.menu.add_command(label="Sair", command=self.sair)
+        self.menu.add_command(label="Sair", command=self.sair, font=('Arial', 16))
+        self.menu.add_command(label="Limpar Chat", command=self.limpar_chat, font=('Arial', 16))
 
         # Exibir o menu suspenso no botão
         self.menu.post(self.menu_button.winfo_rootx(), self.menu_button.winfo_rooty() + self.menu_button.winfo_height())
