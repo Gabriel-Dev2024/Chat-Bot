@@ -66,6 +66,7 @@ class Interface_Chat():
         self.text_conversa = ctk.CTkTextbox(self.frame_chat, width=600, height=360, state="disabled", fg_color=self.entry_color, wrap=tk.WORD, text_color=self.text_color)
         self.text_conversa.configure(font=('Arial', 12))
         self.text_conversa.pack(pady=(20, 0))
+        self.text_conversa.bind('<Control-v>', self.paste_text)
 
         self.entry = ctk.CTkTextbox(self.frame_chat, width=500, height=60, fg_color=self.entry_color, text_color=self.text_color)
         self.entry.pack(pady=(30, 0))
@@ -73,7 +74,6 @@ class Interface_Chat():
 
         button = ctk.CTkButton(self.frame_chat, text='Enviar', width=100, command=self.funcao_enviar, fg_color='#232DA9', hover_color='#02075D')
         button.pack(pady=(20, 0))
-
         
     def limpar_chat(self):
         self.conversas.clear()
@@ -135,8 +135,13 @@ class Interface_Chat():
     def escrever_letra(self):
         if self.index < len(self.resposta):
             self.conversas[-1] += self.resposta[self.index]
-            self.atualizar_conversa()
             self.index += 1
+            self.atualizar_conversa()
+            
+            # Verificar a posição de rolagem. Rola para o final apenas se estiver no fim
+            if self.text_conversa.yview()[1] == 1.0:  # Se o scroll está no final
+                self.text_conversa.yview(tk.END)
+            
             self.text_conversa.see(tk.END)
             self.app.after(3, self.escrever_letra)
         else:
@@ -147,20 +152,20 @@ class Interface_Chat():
         self.text_conversa.delete('1.0', tk.END)
 
         for conversa in self.conversas:
-            conversa_str = str(conversa)
+            conversa_str = str(conversa).strip()
             
+            # Verifica e formata conversas que começam com # ou **
             if conversa_str.startswith('#'):
-                texto_sem_simbolo = conversa_str[1:].strip()  
-                self.text_conversa.insert(tk.END, texto_sem_simbolo + '\n', 'bold')  
+                texto_sem_simbolo = conversa_str[1:].strip()  # Remove o # inicial
+                self.text_conversa.insert(tk.END, texto_sem_simbolo + '\n', 'bold')  # Aplica estilo em negrito
 
             elif conversa_str.startswith('**'):
-                texto_sem_simbolos = conversa_str[2:].strip()  
-                self.text_conversa.insert(tk.END, texto_sem_simbolos + '\n', 'bold')  
+                texto_sem_simbolos = conversa_str[2:].strip()  # Remove o ** inicial
+                self.text_conversa.insert(tk.END, texto_sem_simbolos + '\n', 'bold')  # Aplica estilo em negrito
 
             else:
-                self.text_conversa.insert(tk.END, conversa + '\n') 
+                self.text_conversa.insert(tk.END, conversa_str + '\n')  # Insere texto sem formatação especial
 
         self.text_conversa.configure(state="disabled")
-        self.text_conversa.yview(tk.END)
 
 Interface_Chat()
