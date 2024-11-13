@@ -40,7 +40,7 @@ class Interface_Chat():
             self.text_color = "#000000"  # Texto preto
             self.entry_color = "#D7D8D7"  # Caixa de entrada clara
 
-    def tela(self):
+    def tela_chat(self):
         largura_janela = 1000
         altura_janela = 650
 
@@ -52,6 +52,20 @@ class Interface_Chat():
 
         self.app.geometry(f'{largura_janela}x{altura_janela}+{pos_x}+{pos_y}')
         self.app.title("ChatBot")
+        self.app.resizable(False, False)
+
+    def tela(self):
+        largura_janela = 500
+        altura_janela = 300
+
+        largura_tela = self.app.winfo_screenwidth()
+        altura_tela = self.app.winfo_screenheight()
+
+        pos_x = (largura_tela // 2) - (largura_janela // 2)
+        pos_y = (altura_tela // 2.22) - (altura_janela // 2)
+
+        self.app.geometry(f'{largura_janela}x{altura_janela}+{pos_x}+{pos_y}')
+        self.app.title("Reconhecimento")
         self.app.resizable(False, False)
 
     def tela_reconhecimento(self):
@@ -67,7 +81,15 @@ class Interface_Chat():
     def reconhecimento(self):
         import reconhecedor
 
+        nome_usuario = reconhecedor.reconhecer_nome()
+
+        if nome_usuario:
+            print(f"Bem-vindo, {nome_usuario}!")
+            self.tela_chat()
+
     def tela_chat(self):
+        self.frame_reconhecimento.pack_forget()
+
         self.frame_chat = ctk.CTkFrame(master=self.app, fg_color=self.bg_color)
         self.frame_chat.pack(fill="both", expand=True)
 

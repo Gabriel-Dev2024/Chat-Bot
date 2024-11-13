@@ -12,34 +12,36 @@ id_para_nome = {v: k for k, v in nome_para_id.items()}  # Inverter o dicionário
 
 # Definir parâmetros para exibição
 largura, altura = 220, 220
-font = cv2.FONT_HERSHEY_COMPLEX_SMALL
 
 # Iniciar a captura de vídeo
 camera = cv2.VideoCapture(0)
 
-while True:
-    conectado, imagem = camera.read()
-    imagemCinza = cv2.cvtColor(imagem, cv2.COLOR_BGR2GRAY)
-    facesdetec = classific.detectMultiScale(imagemCinza, scaleFactor=1.5, minSize=(150, 150))
-
-    for (x, y, l, a) in facesdetec:
-        imagemFace = cv2.resize(imagemCinza[y:y + a, x:x + l], (largura, altura))
-        cv2.rectangle(imagem, (x, y), (x + l, y + a), (0, 0, 255), 2)
-
-        # Realizar a previsão de reconhecimento facial
-        id, confianca = reconhecedor.predict(imagemFace)
+def reconhecer_nome():
+    while True:
+        conectado, imagem = camera.read()
         
-        # Obter o nome a partir do ID
-        nome = id_para_nome.get(id, "Desconhecido")
+        # Verifique se a captura foi bem-sucedida
+        if not conectado or imagem is None:
+            print("Erro ao capturar imagem da câmera.")
+            break
         
-        # Exibir o nome abaixo do retângulo
-        cv2.putText(imagem, nome, (x, y + a + 30), font, 2, (0, 0, 255), 2)
-    
-    cv2.imshow("Face", imagem)
-    
-    # Encerrar o loop com a tecla 'q'
-    if cv2.waitKey(1) == ord('q'):
-        break
+        imagemCinza = cv2.cvtColor(imagem, cv2.COLOR_BGR2GRAY)
+        facesdetec = classific.detectMultiScale(imagemCinza, scaleFactor=1.5, minSize=(150, 150))
 
-camera.release()
-cv2.destroyAllWindows()
+        for (x, y, l, a) in facesdetec:
+            imagemFace = cv2.resize(imagemCinza[y:y + a, x:x + l], (largura, altura))
+
+            # Realizar a previsão de reconhecimento facial
+            id, confianca = reconhecedor.predict(imagemFace)
+
+            # Obter o nome a partir do ID
+            nome = id_para_nome.get(id, "Desconhecido")
+            
+            # Retorna o nome da pessoa reconhecida
+            camera.release()
+            cv2.destroyAllWindows()
+            return nome
+
+# Chama a função e imprime o nome reconhecido
+nome_reconhecido = reconhecer_nome()
+print("Nome reconhecido:", nome_reconhecido)
