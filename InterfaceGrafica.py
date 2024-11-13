@@ -22,9 +22,10 @@ class Interface_Chat():
         self.definir_cores()
 
         self.tela()
-        self.tela_chat()
+        self.tela_reconhecimento()
 
-        self.criar_menu()
+        # self.tela_chat()
+        # self.criar_menu()
 
         self.app.mainloop()
 
@@ -53,6 +54,19 @@ class Interface_Chat():
         self.app.title("ChatBot")
         self.app.resizable(False, False)
 
+    def tela_reconhecimento(self):
+        self.frame_reconhecimento = ctk.CTkFrame(master=self.app, fg_color=self.bg_color)
+        self.frame_reconhecimento.pack(fill="both", expand=True)
+
+        self.label_title = ctk.CTkLabel(self.frame_reconhecimento, text='Reconhecimento Facial', font=(self.font_header, 32), text_color=self.text_color)
+        self.label_title.pack(pady=(20, 0))
+
+        button_reconhecimento = ctk.CTkButton(master=self.frame_reconhecimento, text='Reconhecimento', width=100, fg_color='#232DA9', hover_color='#02075D', command=self.reconhecimento)
+        button_reconhecimento.pack(pady=(30, 0))
+
+    def reconhecimento(self):
+        import reconhecedor
+
     def tela_chat(self):
         self.frame_chat = ctk.CTkFrame(master=self.app, fg_color=self.bg_color)
         self.frame_chat.pack(fill="both", expand=True)
@@ -80,21 +94,17 @@ class Interface_Chat():
         self.atualizar_conversa()
 
     def criar_menu(self):
-        # Frame para o menu no canto superior direito
         self.menu_frame = ctk.CTkFrame(self.app, width=100, height=50, fg_color='gray')
-        self.menu_frame.place(x=920, y=10)  # Posicionar o menu no canto superior direito
+        self.menu_frame.place(x=920, y=10)
 
-        # Botão de três barrinhas (menu hamburguer)
         self.menu_button = ctk.CTkButton(self.menu_frame, text="≡", width=30, height=30, command=self.menu_opcoes, fg_color=self.bg_color, text_color=self.text_color)
         self.menu_button.pack(pady=10, padx=10)
 
     def menu_opcoes(self):
-        # Criação do menu suspenso
         self.menu = tk.Menu(self.app, tearoff=0)
         self.menu.add_command(label="Sair", command=self.sair, font=('Arial', 16))
         self.menu.add_command(label="Limpar Chat", command=self.limpar_chat, font=('Arial', 16))
 
-        # Exibir o menu suspenso no botão
         self.menu.post(self.menu_button.winfo_rootx(), self.menu_button.winfo_rooty() + self.menu_button.winfo_height())
 
     def sair(self):
